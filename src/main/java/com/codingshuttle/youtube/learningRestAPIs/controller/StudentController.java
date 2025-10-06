@@ -1,29 +1,34 @@
 package com.codingshuttle.youtube.learningRestAPIs.controller;
 
+import com.codingshuttle.youtube.learningRestAPIs.dto.AddStudent;
 import com.codingshuttle.youtube.learningRestAPIs.dto.StudentDto;
 import com.codingshuttle.youtube.learningRestAPIs.service.StudentService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/students")
 public class StudentController {
 
     private final StudentService studentService;
-    private final ModelMapper modelMapper;
 
-    @GetMapping("/students")
-    public List<StudentDto> getAllStudents(){
-        return studentService.getAllStudents();
+    @GetMapping
+    public ResponseEntity<List<StudentDto>> getAllStudents(){
+        return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-    @GetMapping("/students/{id}")
-    public StudentDto getStudentById(@PathVariable Long id){
-        return studentService.getStudentsById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id){
+        return ResponseEntity.ok(studentService.getStudentsById(id));
+    }
+
+    @PostMapping("/createStudent")
+    public ResponseEntity<StudentDto> createNewStudent(@RequestBody AddStudent addStudent ){
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createNewStudent(addStudent));
     }
 }
